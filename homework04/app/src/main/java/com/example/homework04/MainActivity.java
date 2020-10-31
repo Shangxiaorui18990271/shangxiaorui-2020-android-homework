@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText et_password; // 声明一个编辑框对象
     private Button btn_forget; // 声明一个忘记密码按钮控件对象
     private Button btn_login; // 声明一个登录按钮控件对象
+    private Button btn_signup;//声明一个注册按钮控件对象
     private Switch sw_status; // 声明一个开关对象
 
     private int mRequestCode = 0; // 跳转页面时的请求代码
@@ -50,14 +51,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private UserDBHelper mHelper; // 声明一个用户数据库的帮助器对象
 
 
-
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         rg_login = findViewById(R.id.rg_login);
         rb_password = findViewById(R.id.rb_password);
@@ -68,12 +66,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_forget = findViewById(R.id.btn_forget);
         btn_login = findViewById(R.id.btn_login);
         sw_status = findViewById(R.id.sw_status);
-
+        btn_signup = findViewById(R.id.btn_signup);
 
 
         // 给rg_login设置单选监听器
         rg_login.setOnCheckedChangeListener(new RadioListener());
-        // 给ck_remember设置勾选监听器
+        // 给 sw_status设置勾选监听器
         sw_status.setOnCheckedChangeListener(new CheckListener());
         // 给et_phone添加文本变更监听器
         et_phone.addTextChangedListener(new HideTextWatcher(et_phone));
@@ -81,20 +79,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         et_password.addTextChangedListener(new HideTextWatcher(et_password));
 
 
-
         btn_forget.setOnClickListener(this);
         btn_login.setOnClickListener(this);
+        btn_signup.setOnClickListener(this);
 
         initTypeSpinner();
-
-
 
         //从share_login.xml中获取共享参数对象
         mShared = getSharedPreferences("share_login", MODE_PRIVATE);
 
         // 获取共享参数中保存的手机号码
 
-        /*String phone = mShared.getString("phone", "");
+       String phone = mShared.getString("phone", "");
 
         // 获取共享参数中保存的密码
 
@@ -104,22 +100,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         et_password.setText(password); // 给密码编辑框填写上次保存的密码
 
-        */
+
 
 
 
         // 给密码编辑框注册一个焦点变化监听器，一旦焦点发生变化，就触发监听器的onFocusChange方法
+
         et_password.setOnFocusChangeListener(this);
-
-
 
     }
 
 
-
     // 初始化用户类型的下拉框
 
-    private String[] typeArray = {"个人用户", "公司用户","18990271 尚潇睿"};
+    private String[] typeArray = {"个人用户", "公司用户", "18990271 尚潇睿"};
 
     private void initTypeSpinner() {
         // 声明一个下拉列表的数组适配器
@@ -135,15 +129,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sp_type.setAdapter(typeAdapter);
         // 设置下拉框默认显示第几项
         sp_type.setSelection(2);
-
-
-
         // 给下拉框设置选择监听器，一旦用户选中某一项，就触发监听器的onItemSelected方法
         sp_type.setOnItemSelectedListener(new TypeSelectedListener());
 
     }
-
-
 
     // 定义用户类型的选择监听器
     class TypeSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -152,17 +141,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mType = arg2;
         }
 
-
         // 未选择时的处理方法，通常无需关注
         public void onNothingSelected(AdapterView<?> arg0) {
         }
 
     }
 
-
-
     // 定义登录方式的单选监听器
-
     private class RadioListener implements RadioGroup.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -181,9 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     // 定义是否记住密码的勾选监听器
-
     private class CheckListener implements CompoundButton.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -193,9 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     // 定义编辑框的文本变化监听器
-
     private class HideTextWatcher implements TextWatcher {
         private EditText mView;
         private int mMaxLength;
@@ -207,39 +188,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mMaxLength = ViewUtil.getMaxLength(v);
         }
 
-
         // 在编辑框的输入文本变化前触发
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
 
         // 在编辑框的输入文本变化时触发
-
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mStr = s;
 
         }
 
 
-
         // 在编辑框的输入文本变化后触发
-
         public void afterTextChanged(Editable s) {
             if (mStr == null || mStr.length() == 0)
                 return;
 
-            // 手机号码输入达到11位，或者密码/验证码输入达到6位，都关闭输入法软键盘
-
+            // 手机号码输入达到11位，或者密码/验证码输入达到8位，都关闭输入法软键盘
             if ((mStr.length() == 11 && mMaxLength == 11) ||
-                    (mStr.length() == 6 && mMaxLength == 6)) {
+                    (mStr.length() == 8 && mMaxLength == 8)) {
                 ViewUtil.hideOneInputMethod(MainActivity.this, mView);
             }
         }
     }
 
 
-
     @Override
-
     public void onClick(View v) {
         String phone = et_phone.getText().toString();
         if (v.getId() == R.id.btn_forget) { // 点击了“忘记密码”按钮
@@ -266,27 +240,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } else if (v.getId() == R.id.btn_login) { // 点击了“登录”按钮
-
             if (phone.length() < 11) { // 手机号码不足11位
-
                 Toast.makeText(this, "请输入正确的手机号", Toast.LENGTH_SHORT).show();
-
                 return;
-
             }
 
             if (rb_password.isChecked()) { // 密码方式校验
                 // 根据手机号码到数据库中查询用户记录
                 UserInfo info = mHelper.queryByPhone(et_phone.getText().toString());
                 //输入的密码跟mPassword比较
-                // if (!et_password.getText().toString().equals(mPassword)) {
+                //if (!et_password.getText().toString().equals(mPassword)) {
                 //输入的密码和数据库储存的比较
                 if (!et_password.getText().toString().equals(info.pwd)) {
                     Toast.makeText(this, "请输入正确的密码", Toast.LENGTH_SHORT).show();
                 } else { // 密码校验通过
                     loginSuccess(); // 提示用户登录成功
                 }
-
             } else if (rb_verifycode.isChecked()) { // 验证码方式校验
                 if (!et_password.getText().toString().equals(mVerifyCode)) {
                     Toast.makeText(this, "请输入正确的验证码", Toast.LENGTH_SHORT).show();
@@ -294,120 +263,114 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     loginSuccess(); // 提示用户登录成功
                 }
             }
-        }
-    }
+        } else if (v.getId() == R.id.btn_signup) {
+            if (rb_password.isChecked()) {
+                Intent intent = new Intent(this, SQLiteWriteActivity.class);
+                startActivityForResult(intent, mRequestCode);
 
-
-    // 忘记密码修改后，从后一个页面携带参数返回当前页面时触发
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == mRequestCode && data != null) {
-            // 用户密码已改为新密码，故更新密码变量
-            mPassword = data.getStringExtra("new_password");
-        }
-
-    }
-
-
-    // 从修改密码页面返回登录页面，要清空密码的输入框
-    @Override
-    protected void onRestart() {
-        et_password.setText("");
-        super.onRestart();
-
-    }
-
-
-    @Override
-
-    protected void onResume() {
-        super.onResume();
-        // 获得用户数据库帮助器的一个实例
-        mHelper = UserDBHelper.getInstance(this, 2);
-        // 恢复页面，则打开数据库连接
-        mHelper.openWriteLink();
-
-    }
-
-    @Override
-
-    protected void onPause() {
-        super.onPause();
-        // 暂停页面，则关闭数据库连接
-        mHelper.closeLink();
-
-    }
-
-
-    // 校验通过，登录成功
-
-    private void loginSuccess() {
-        // 如果勾选了“记住密码”
-        if (bRemember) {
-            //把手机号码和密码都保存到共享参数中
-            SharedPreferences.Editor editor = mShared.edit(); // 获得编辑器的对象
-            editor.putString("phone", et_phone.getText().toString()); // 添加名叫phone的手机号码
-            editor.putString("password", et_password.getText().toString()); // 添加名叫password的密码
-            editor.commit(); // 提交编辑器中的修改
-
-
-
-            //把手机号码和密码保存为数据库的用户表记录
-
-            // 创建一个用户信息实体类
-
-            UserInfo info = new UserInfo();
-            info.phone = et_phone.getText().toString();
-            info.pwd = et_password.getText().toString();
-            info.update_time = DateUtil.getNowDateTime("yyyy-MM-dd HH:mm:ss");
-            // 往用户数据库添加登录成功的用户信息（包含手机号码、密码、登录时间）
-            mHelper.insert(info);
-
-        }
-
-
-        String desc = String.format("您的手机号码是%s，类型是%s。恭喜你通过登录验证，点击“确定”按钮返回上个页面",
-                et_phone.getText().toString(), typeArray[mType]);
-
-        // 弹出提醒对话框，提示用户登录成功
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("登录成功");
-        builder.setMessage(desc);
-        builder.setPositiveButton("确定返回", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
             }
-        });
-
-        builder.setNegativeButton("我再看看", null);
-        AlertDialog alert = builder.create();
-        alert.show();
+        }
     }
 
 
+        // 忘记密码修改后，从后一个页面携带参数返回当前页面时触发
 
-    // 焦点变更事件的处理方法，hasFocus表示当前控件是否获得焦点。
+        @Override
+        protected void onActivityResult ( int requestCode, int resultCode, Intent data){
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == mRequestCode && data != null) {
+                // 用户密码已改为新密码，故更新密码变量
+                mPassword = data.getStringExtra("new_password");
+            }
 
-    // 为什么光标进入密码框事件不选onClick？因为要点两下才会触发onClick动作（第一下是切换焦点动作）
+        }
 
-    @Override
+        // 从修改密码页面返回登录页面，要清空密码的输入框
+        @Override
+        protected void onRestart () {
+            et_password.setText("");
+            super.onRestart();
+        }
 
-    public void onFocusChange(View v, boolean hasFocus) {
-        String phone = et_phone.getText().toString();
-        // 判断是否是密码编辑框发生焦点变化
-        if (v.getId() == R.id.et_password) {
-            // 用户已输入手机号码，且密码框获得焦点
-            if (phone.length() > 0 && hasFocus) {
-                // 根据手机号码到数据库中查询用户记录
-                UserInfo info = mHelper.queryByPhone(phone);
-                if (info != null) {
-                    // 找到用户记录，则自动在密码框中填写该用户的密码
-                    et_password.setText(info.pwd);
-                    mPassword = info.pwd;
+        @Override
+        protected void onResume () {
+            super.onResume();
+            // 获得用户数据库帮助器的一个实例
+            mHelper = UserDBHelper.getInstance(this, 2);
+            // 恢复页面，则打开数据库连接
+            mHelper.openWriteLink();
+
+        }
+
+        @Override
+        protected void onPause () {
+            super.onPause();
+            // 暂停页面，则关闭数据库连接
+            mHelper.closeLink();
+
+        }
+
+
+        // 校验通过，登录成功
+        private void loginSuccess () {
+            // 如果勾选了“记住密码”
+            if (bRemember) {
+                //把手机号码和密码都保存到共享参数中
+                SharedPreferences.Editor editor = mShared.edit(); // 获得编辑器的对象
+                editor.putString("phone", et_phone.getText().toString()); // 添加名叫phone的手机号码
+                editor.putString("password", et_password.getText().toString()); // 添加名叫password的密码
+                editor.commit(); // 提交编辑器中的修改
+                //把手机号码和密码保存为数据库的用户表记录
+                // 创建一个用户信息实体类
+                UserInfo info = new UserInfo();
+                info.phone = et_phone.getText().toString();
+                info.pwd = et_password.getText().toString();
+                info.update_time = DateUtil.getNowDateTime("yyyy-MM-dd HH:mm:ss");
+                // 往用户数据库添加登录成功的用户信息（包含手机号码、密码、登录时间）
+                mHelper.insert(info);
+
+            }
+
+
+            String desc = String.format("您的手机号码是%s，类型是%s。恭喜你通过登录验证，点击“确定”按钮返回上个页面",
+                    et_phone.getText().toString(), typeArray[mType]);
+
+            // 弹出提醒对话框，提示用户登录成功
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("登录成功");
+            builder.setMessage(desc);
+            builder.setPositiveButton("确定返回", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            builder.setNegativeButton("我再看看", null);
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
+
+        // 焦点变更事件的处理方法，hasFocus表示当前控件是否获得焦点。
+
+        // 为什么光标进入密码框事件不选onClick？因为要点两下才会触发onClick动作（第一下是切换焦点动作）
+
+        @Override
+        public void onFocusChange (View v,boolean hasFocus){
+            String phone = et_phone.getText().toString();
+            // 判断是否是密码编辑框发生焦点变化
+            if (v.getId() == R.id.et_password) {
+                // 用户已输入手机号码，且密码框获得焦点
+                if (phone.length() > 0 && hasFocus) {
+                    // 根据手机号码到数据库中查询用户记录
+                    UserInfo info = mHelper.queryByPhone(phone);
+                    if (info != null) {
+                        // 找到用户记录，则自动在密码框中填写该用户的密码
+                        et_password.setText(info.pwd);
+                        mPassword = info.pwd;
+                    }
+
                 }
 
             }
@@ -416,4 +379,3 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-}

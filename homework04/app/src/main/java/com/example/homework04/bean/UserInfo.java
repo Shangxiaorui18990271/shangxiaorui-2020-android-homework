@@ -7,7 +7,7 @@ public class UserInfo {
     public int age;
     public long height;
     public float weight;
-    public boolean married;
+    public boolean sex;
     public String update_time;
     public String phone;
     public String pwd;
@@ -19,7 +19,7 @@ public class UserInfo {
         age = 0;
         height = 0L;
         weight = 0.0f;
-        married = false;
+        sex = false;
         update_time = "";
         phone = "";
         pwd = "";
