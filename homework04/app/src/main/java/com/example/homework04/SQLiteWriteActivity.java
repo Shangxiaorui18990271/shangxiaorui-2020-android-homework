@@ -3,6 +3,7 @@ package com.example.homework04;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import com.example.homework04.util.DateUtil;
 
 public class SQLiteWriteActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG ="SQLiteWriteActivity";//Log提示信息
     private UserDBHelper mHelper; // 声明一个用户数据库帮助器的对象
     private EditText et_name;
     private EditText et_age;
@@ -25,7 +27,12 @@ public class SQLiteWriteActivity extends AppCompatActivity implements View.OnCli
     private EditText et_pwd;
     private EditText et_repwd;
     private EditText et_phone;
-    private boolean bSex = false;
+    private boolean BMsex = false;
+
+    private int mRequestCode = 0;//跳转页面时的请求代码
+    private int mType =0;//用户类型
+    private boolean bRemember =false;//是否记住密码
+    private String mVerifyCode;//验证码
 
 
     @Override
@@ -42,42 +49,38 @@ public class SQLiteWriteActivity extends AppCompatActivity implements View.OnCli
         et_phone=findViewById(R.id.et_phone);
         findViewById(R.id.btn_save).setOnClickListener(this);
 
-
-
         Spinner sp_sex = findViewById(R.id.sp_sex);
         sp_sex.setOnItemSelectedListener(new TypeSelectedListener());
 
     }
 
     class TypeSelectedListener implements AdapterView.OnItemSelectedListener {
-
         public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            bSex = (arg2 == 0) ? false : true;
-
+            BMsex = (arg2 == 0) ? false : true;
         }
+
         public void onNothingSelected(AdapterView<?> arg0) {
-
         }
-
     }
 
     @Override
     protected void onStart() {
+        Log.d(TAG,"onStart:openLink");
         super.onStart();
         // 获得数据库帮助器的实例
         mHelper = UserDBHelper.getInstance(this, 2);
         // 打开数据库帮助器的写连接
         mHelper.openWriteLink();
-
+        //打开数据库帮助的读连接
+        mHelper.openReadLink();
     }
-
 
     @Override
     protected void onStop() {
+        Log.d(TAG,"onStart:closeLink");
         super.onStop();
         // 关闭数据库连接
         mHelper.closeLink();
-
     }
 
     @Override
@@ -103,8 +106,8 @@ public class SQLiteWriteActivity extends AppCompatActivity implements View.OnCli
                 showToast("请先填写体重");
                 return;
             } else if(!pwd.equals(repwd)){
-                showToast("两次输入的密码不一致");return;
-
+                showToast("两次输入的密码不一致");
+                return;
             } else if (TextUtils.isEmpty(phone)) {
                 showToast("请先填写手机号");
                 return;
@@ -116,7 +119,7 @@ public class SQLiteWriteActivity extends AppCompatActivity implements View.OnCli
             info.age = Integer.parseInt(age);
             info.height = Long.parseLong(height);
             info.weight = Float.parseFloat(weight);
-            info.sex=bSex;
+            info.sex = BMsex;
             info.update_time = DateUtil.getNowDateTime("yyyy-MM-dd HH:mm:ss");
             info.pwd=pwd;
             info.phone=phone;
@@ -125,15 +128,14 @@ public class SQLiteWriteActivity extends AppCompatActivity implements View.OnCli
             mHelper.insert(info);
             showToast("数据已写入SQLite数据库");
 
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
-
     }
 
     private void showToast(String desc) {
         Toast.makeText(this, desc, Toast.LENGTH_SHORT).show();
-
     }
-
 }
