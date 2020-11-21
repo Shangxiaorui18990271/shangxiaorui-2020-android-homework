@@ -43,7 +43,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         // 从布局视图中获取名叫gv_channel的网格视图
         gv_channel = findViewById(R.id.gv_channel);
         findViewById(R.id.iv_cart).setOnClickListener(this);
-        tv_title.setText("手机商场");
+        tv_title.setText("尚潇睿的商场");
     }
 
     @Override
