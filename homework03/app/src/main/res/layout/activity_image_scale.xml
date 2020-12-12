@@ -66,21 +66,6 @@
 
 
     <Button
-        android:id="@+id/btn_center"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/bt_drawable"
-        android:text="center"
-        app:layout_constraintEnd_toStartOf="@+id/btn_fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_fitCenter" />
-
-    <Button
         android:id="@+id/btn_fitXY"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -95,6 +80,21 @@
         app:layout_constraintStart_toEndOf="@+id/btn_center"
         app:layout_constraintTop_toTopOf="@+id/btn_center" />
 
+
+    <Button
+        android:id="@+id/btn_center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/bt_drawable"
+        android:text="center"
+        app:layout_constraintEnd_toStartOf="@+id/btn_fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_fitCenter" />
 
     <Button
         android:id="@+id/btn_fitStart"
